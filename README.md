@@ -15,7 +15,7 @@ var corsMiddleware = require('cors-middleware')
 var merry = require('merry')
 
 var mw = merry.middleware
-var cors = corsMiddleware ({
+var cors = corsMiddleware({
   methods: 'GET',
   origin: 'http://localhost:8080'
 })
