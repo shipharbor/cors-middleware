@@ -21,13 +21,12 @@ var cors = corsMiddleware({
 })
 
 var app = merry()
-app.router([
-  [ '/cors', mw([cors, myEndpoint]) ]
-])
+app.use(cors)
+app.router('GET', '/', homeRoute)
 
-function myEndpoint (req, res, ctx, done) {
+function homeRoute (req, res, ctx) {
   console.log(res.getHeader('access-control-allow-origin')) // 'http://localhost:8080'
-  done(null, 'woah cors headers are all set')
+  ctx.send(200, { msg: 'woah cors headers are all set' })
 }
 ```
 

@@ -1,24 +1,17 @@
 var corsMiddleware = require('./')
 var merry = require('merry')
-var http = require('http')
 
-var mw = merry.middleware
 var cors = corsMiddleware({
   methods: 'POST, GET'
 })
 
 var app = merry()
 
-app.router([
-  [ '/', {
-    get: mw([ cors, myEndpoint ])
-  }]
-])
+app.use(cors)
 
-function myEndpoint (req, res, ctx, done) {
+app.router('GET', '/', function (req, res, ctx) {
   console.log(res.getHeader('access-control-allow-methods')) // 'POST, GET'
-  done(null, 'whoa headers are set')
-}
+  ctx.send(200, { message: 'whoa headers are set' })
+})
 
-var server = http.createServer(app.start())
-server.listen(8080)
+app.listen(8000)
