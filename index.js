@@ -23,11 +23,10 @@ function cors (opts) {
     methods = methods.join(', ')
   }
 
-  return function (req, res, ctx, done) {
+  return function (req, res, ctx) {
     res.setHeader('Access-Control-Allow-Origin', origin)
     res.setHeader('Access-Control-Allow-Headers', headers)
     res.setHeader('Access-Control-Allow-Credentials', credentials)
     res.setHeader('Access-Control-Allow-Methods', methods)
-    done()
   }
 }
