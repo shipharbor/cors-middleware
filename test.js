@@ -9,23 +9,19 @@ var tape = require('tape')
 tape('glossycors', function (t) {
   t.test('should set default cors headers on a handler', function (t) {
     t.plan(11)
-    var mw = merry.middleware
     var cors = corsMiddleware()
     var app = merry({ logStream: devnull() })
 
-    app.router([
-      '/', {
-        put: mw([ cors, myEndpoint ]),
-        get: mw([ cors, myEndpoint ])
-      }
-    ])
+    app.use(cors)
+    app.route('GET', '/', myEndpoint)
+    app.route('PUT', '/', myEndpoint)
 
-    function myEndpoint (req, res, ctx, done) {
+    function myEndpoint (req, res, ctx) {
       t.equal(res.getHeader('access-control-allow-origin'), '*', 'cors allow origin in *')
       t.equal(res.getHeader('access-control-allow-headers'), 'Content-Type, Accept, X-Requested-With', 'cors content type is ok')
       t.equal(res.getHeader('access-control-allow-credentials'), true, 'cors credentials are commin through')
       t.equal(res.getHeader('access-control-allow-methods'), 'PUT, POST, DELETE, GET, OPTIONS', 'cors methods are ok')
-      done()
+      ctx.send(200, {})
     }
 
     var server = http.createServer(app.start())
@@ -43,21 +39,18 @@ tape('glossycors', function (t) {
 
   t.test('should accept a single cors method on a handler', function (t) {
     t.plan(3)
-    var mw = merry.middleware
     var cors = corsMiddleware({
       methods: 'GET'
     })
+
     var app = merry({ logStream: devnull() })
 
-    app.router([
-      '/', {
-        get: mw([ cors, myEndpoint ])
-      }
-    ])
+    app.use(cors)
+    app.route('GET', '/', myEndpoint)
 
-    function myEndpoint (req, res, ctx, done) {
+    function myEndpoint (req, res, ctx) {
       t.equal(res.getHeader('access-control-allow-methods'), 'GET', 'cors sets get method')
-      done()
+      ctx.send(200, {})
     }
 
     var server = http.createServer(app.start())
@@ -66,21 +59,17 @@ tape('glossycors', function (t) {
 
   t.test('should accept multiple cors methods on a handler', function (t) {
     t.plan(3)
-    var mw = merry.middleware
     var cors = corsMiddleware({
       methods: 'GET, PUT'
     })
     var app = merry({ logStream: devnull() })
 
-    app.router([
-      '/', {
-        get: mw([ cors, myEndpoint ])
-      }
-    ])
+    app.use(cors)
+    app.route('GET', '/', myEndpoint)
 
-    function myEndpoint (req, res, ctx, done) {
+    function myEndpoint (req, res, ctx) {
       t.equal(res.getHeader('access-control-allow-methods'), 'GET, PUT', 'cors sets get and put methods')
-      done()
+      ctx.send(200, {})
     }
 
     var server = http.createServer(app.start())
