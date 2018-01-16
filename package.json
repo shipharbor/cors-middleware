@@ -1,6 +1,6 @@
 {
   "name": "cors-middleware",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "add cors headers to a route's res",
   "main": "index.js",
   "scripts": {
